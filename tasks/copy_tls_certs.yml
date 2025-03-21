@@ -1,0 +1,48 @@
+---
+- name: Create Vector SSL tls_directory
+  file:
+    path: "{{ tls_directory }}"
+    state: directory
+    owner: vector
+    group: vector
+    mode: "0755"
+
+- name: "Copy CA Key to Vector Server"
+  copy:
+    src: "{{ controller_certswd.path}}/ca-key.pem"
+    dest: "{{ tls_directory }}/ca-key.pem"
+    mode: "0750"
+    owner: vector
+    group: vector
+  notify: Restart vector
+  when: inventory_hostname in groups["vector_servers"]
+
+- name: "Copy CA CRT to Vector Server"
+  copy:
+    src: "{{ controller_certswd.path}}/ca-crt.pem"
+    dest: "{{ tls_directory }}/ca-crt.pem"
+    mode: "0755"
+    owner: vector
+    group: vector
+  notify: Restart vector
+  when: inventory_hostname in groups["vector_servers"]
+
+- name: "Copy CA CRT to Vector Client"
+  copy:
+    src: "{{ controller_certswd.path}}/ca-crt.pem"
+    dest: "{{ tls_directory }}/ca-crt.pem"
+    mode: "0755"
+    owner: vector
+    group: vector
+  notify: Restart vector
+  when: inventory_hostname in groups["vector_clients"]
+
+- name: "Copy CA CRT to Vector Syslog Clients"
+  copy:
+    src: "{{ controller_certswd.path}}/ca-crt.pem"
+    dest: "{{ tls_directory }}/ca-crt.pem"
+    mode: "0755"
+    owner: vector
+    group: vector
+  notify: Restart rsyslog
+  when: inventory_hostname in groups["vector_syslog_clients"]

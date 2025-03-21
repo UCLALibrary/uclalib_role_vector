@@ -1,0 +1,3 @@
+global(DefaultNetstreamDriverCAFile="{{ tls_directory }}/ca-crt.pem")
+
+action(type="omfwd" protocol="tcp" target="{{ syslog_listener_ip }}" port="{{ syslog_listener_port }}" StreamDriver="gtls" StreamDriverMode="1" StreamDriverAuthMode="anon")

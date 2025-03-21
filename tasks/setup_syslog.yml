@@ -1,0 +1,34 @@
+---
+- name: Ensure vector group exists
+  group:
+    name: vector
+    state: present
+    system: true
+
+- name: Ensure vector user exists
+  user:
+    name: vector
+    comment: Vector observability data router
+    group: vector
+    system: true
+
+- name: Install Rsyslog
+  dnf:
+    name:
+      - rsyslog
+      - rsyslog-gnutls
+    state: present
+
+- name: Add syslog config to forward all syslog servers to vector server(s)
+  template:
+    src: rsyslog-vector.conf.j2
+    dest: /etc/rsyslog.d/rsyslog-vector.conf
+    mode: 0644
+    owner: root
+    group: root
+  notify: Restart rsyslog
+
+- name: Start Rsyslog
+  service:
+    name: rsyslog
+    enabled: true

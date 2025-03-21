@@ -1,0 +1,25 @@
+---
+- name: Install openssl and pyopenssl
+  dnf:
+    name:
+      - openssl
+      - python3-pyOpenSSL
+    state: present
+
+- name: Generate private key
+  openssl_privatekey:
+    path: "{{ controller_certswd.path }}/ca-key.pem"
+    mode: 0755
+
+- name: generate csr with CN
+  openssl_csr:
+    path: "{{ controller_certswd.path }}/ca.csr"
+    privatekey_path: "{{ controller_certswd.path }}/ca-key.pem"
+    common_name: "{{ tls_common_name }}"
+
+- name: Generate a Self Signed OpenSSL certificate
+  openssl_certificate:
+    path: "{{ controller_certswd.path }}/ca-crt.pem"
+    privatekey_path: "{{ controller_certswd.path }}/ca-key.pem"
+    csr_path: "/{{ controller_certswd.path }}/ca.csr"
+    provider: selfsigned

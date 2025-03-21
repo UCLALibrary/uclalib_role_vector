@@ -1,0 +1,39 @@
+---
+tls_common_name: example.com
+tls_directory: /etc/ssl/vector
+vector_conf: /etc/vector/vector.yaml
+syslog_listener_ip: 192.168.56.13
+syslog_listener_port: 6514
+
+vector_sources: |
+  sources:
+    syslog_all:
+      type: syslog
+      address: 0.0.0.0:{{ syslog_listener_port }}
+      mode: tcp
+      path: /var/run/vector-syslog.sock
+      tls:
+        ca_file: {{ tls_directory }}/ca-crt.pem
+        crt_file: {{ tls_directory }}/ca-crt.pem
+        enabled: true
+        key_file: {{ tls_directory }}/ca-key.pem 
+
+vector_transforms: |
+  transforms:
+    remap_syslog:
+      inputs:
+        - "syslog_all"
+      type:   "remap"
+      source: |
+              structured = parse_syslog!(.message)
+              . = merge(., structured)
+
+vector_sinks: |
+  sinks:
+    my_sink_id:
+      type: file
+      encoding:
+        codec: "json"
+      inputs:
+        - remap_syslog
+      path: /tmp/vector-%Y-%m-%d.log

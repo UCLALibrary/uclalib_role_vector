@@ -1,0 +1,9 @@
+---
+- name: Create controller certswd dir
+  tempfile:
+    state: directory
+    suffix: _controller_certswd
+  register: controller_certswd
+  notify: Remove controller_certswd
+  run_once: true
+  delegate_to: localhost

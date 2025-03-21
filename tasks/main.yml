@@ -1,0 +1,23 @@
+---
+- import_tasks: create_wd.yml
+
+- import_tasks: install_vector.yml
+  become: true
+  when: inventory_hostname in groups["vector_servers"] or inventory_hostname in groups["vector_clients"]
+
+- import_tasks: setup_syslog.yml
+  become: true
+  when: inventory_hostname in groups["vector_syslog_clients"]
+
+- import_tasks: check_for_existing_cert.yml
+  run_once: true
+  become: true
+
+- import_tasks: create_tls_certs.yml
+  become: true
+  run_once: true
+  delegate_to: localhost
+  when: existing_cert_found.matched == 0
+
+- import_tasks: copy_tls_certs.yml
+  become: true

@@ -1,0 +1,17 @@
+---
+- name: Check for existing certificate
+  find:
+    paths: "{{ tls_directory }}"
+    file_type: file
+    use_regex: true
+    patterns:
+      - '.*.pem'
+  register: existing_cert_found
+
+- name: Fetch existing certificates if found
+  fetch:
+    src: "{{ item.path }}"
+    dest: "{{ controller_certswd.path }}/{{ item.path | basename }}"
+    flat: true
+  loop: "{{ existing_cert_found.files }}"
+  when: existing_cert_found.matched > 0

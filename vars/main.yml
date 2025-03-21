@@ -1,0 +1,3 @@
+---
+tls_directory: "/etc/ssl/vector"
+tls_common_name: "example.com"

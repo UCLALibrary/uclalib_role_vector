@@ -1,0 +1,18 @@
+---
+- name: Restart vector
+  service:
+    name: vector
+    state: restarted
+  become: true
+
+- name: Restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+  become: true
+
+- name: Remove controller_certswd
+  file:
+    path: "{{ controller_certswd.path }}"
+    state: absent
+  delegate_to: localhost

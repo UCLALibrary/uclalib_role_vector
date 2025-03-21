@@ -1,0 +1,34 @@
+---
+
+- name: Add Vector Repository
+  yum_repository:
+    name: vector
+    description: Datadog Vector YUM Repository
+    baseurl: https://yum.vector.dev/stable/vector-0/$basearch/
+    gpgcheck: false
+    repo_gpgcheck: false
+    priority: "1"
+    gpgkey:
+      - https://keys.datadoghq.com/DATADOG_RPM_KEY_CURRENT.public
+      - https://keys.datadoghq.com/DATADOG_RPM_KEY_B01082D3.public
+      - https://keys.datadoghq.com/DATADOG_RPM_KEY_FD4BF915.public
+
+- name: Install Vector
+  dnf:
+    name: vector
+    state: present
+
+- name: Start Vector
+  service:
+    name: vector
+    enabled: true
+
+- name: Update {{ vector_conf }}
+  template:
+    src: templates/vector.yaml.j2
+    dest: "{{ vector_conf }}"
+    owner: vector
+    group: vector
+  notify: Restart vector
+
+
