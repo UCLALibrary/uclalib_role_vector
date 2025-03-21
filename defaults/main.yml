@@ -36,4 +36,4 @@ vector_sinks: |
         codec: "json"
       inputs:
         - remap_syslog
-      path: /tmp/\\{\\{ hostname \\}\\}-vector-%Y-%m-%d.log
+      path: /tmp/\{\{ hostname \}\}-vector-%Y-%m-%d.log
