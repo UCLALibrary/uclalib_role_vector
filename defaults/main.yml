@@ -2,7 +2,7 @@
 tls_common_name: example.com
 tls_directory: /etc/ssl/vector
 vector_conf: /etc/vector/vector.yaml
-syslog_listener_ip: 192.168.56.13
+frontend_listener_ip: 192.168.56.13
 syslog_listener_port: 6514
 
 vector_sources: |
